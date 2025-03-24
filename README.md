@@ -89,3 +89,12 @@ Por favor, atribuye este trabajo a **Sergi Garcia Mecinas** si lo reutilizas o l
 ---
 
 > IA_m es un puente entre lo técnico y lo filosófico, entre la expansión automática y la consciencia humana. Un intento de representar no solo lo que sabemos, sino **cómo** lo sabemos.
+
+## 📜 Licencia
+
+Este proyecto usa una doble licencia:
+
+- 🧠 **Código** (`IA_m.py`, scripts y lógica): bajo la licencia MIT.
+- 📚 **Contenido teórico y visualizaciones** (`README.md`, `hipercubo_fractal.html`, imágenes): bajo **Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)**.
+
+Por favor, si reutilizas parte del proyecto, **menciona a Sergi Garcia Mecinas como autor original**.
