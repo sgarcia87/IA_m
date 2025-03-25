@@ -1,4 +1,5 @@
 ################################################################################################################################ Importación de paquetes
+import unicodedata
 import string
 import heapq
 import openai
@@ -464,9 +465,12 @@ def generar_indice_subgrafos(G, top_n=50, carpeta="subgrafos"):
         nombre_archivo = f"subgrafo_{nodo.replace(' ', '_')}.html"
         ruta = f"{carpeta}/{nombre_archivo}"
         if os.path.exists(ruta):
-            letra = nodo[0].upper()
+            letra_cruda = nodo[0].upper()
+            letra = unicodedata.normalize('NFD', letra_cruda)[0]
+            letra = ''.join(c for c in letra if c.isalpha()).upper()
             if letra not in string.ascii_uppercase:
                 letra = "#"
+
             enlace = f"<li><a href='#' onclick=\"cargarNodo('{nombre_archivo}')\">{nodo}</a></li>"
             letras_dict[letra].append(enlace)
 
@@ -912,11 +916,11 @@ def asignar_niveles_por_defecto(G):
         if "nivel_conceptual" not in G.nodes[nodo]:
             tipo = G.nodes[nodo].get("tipo", "")
             if tipo == "dualidad":
-                G.nodes[nodo]["nivel_conceptual"] = 1
+                G.nodes[nodo]["nivel_conceptual"] = 1 # Detecta su par opuesto y complementario
             elif tipo == "equilibrio":
-                G.nodes[nodo]["nivel_conceptual"] = 2
+                G.nodes[nodo]["nivel_conceptual"] = 2 # Detecta el punto central de equilibrio entre opuestos
             elif tipo == "emergente":
-                G.nodes[nodo]["nivel_conceptual"] = 3
+                G.nodes[nodo]["nivel_conceptual"] = 3 # Detecta su síntesis
             elif tipo == "abstracto":
                 G.nodes[nodo]["nivel_conceptual"] = 4
             else:
@@ -2192,7 +2196,6 @@ def detectar_conceptos_emergentes(G, min_triangulos=3):
                 print(f"🌱 Emergente creado: {nombre_emergente} desde {equilibrio} con {len(dualidades)} dualidades")
 
     return conceptos_emergentes
-
 
 def visualizar_meta_triangulo_global(G):
     from pyvis.network import Network
