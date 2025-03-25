@@ -1,5 +1,5 @@
 ################################################################################################################################ Importación de paquetes
-from collections import defaultdict
+import string
 import heapq
 import openai
 import networkx as nx
@@ -7,20 +7,20 @@ import json
 import re
 import wikipediaapi
 import numpy as np
-from pyvis.network import Network
-from sentence_transformers import SentenceTransformer, util
 import os
-from nltk.corpus import wordnet as wn
-from difflib import get_close_matches
 import nltk
-from nltk.stem.snowball import SnowballStemmer
 import time
 import matplotlib.pyplot as plt
-from collections import Counter
 import signal
 import torch
 import random
-
+from pyvis.network import Network
+from sentence_transformers import SentenceTransformer, util
+from collections import defaultdict
+from nltk.corpus import wordnet as wn
+from difflib import get_close_matches
+from nltk.stem.snowball import SnowballStemmer
+from collections import Counter
 ################################################################################################################################ Configuración
 # Evita los mensajes de descarga de NLTK
 nltk.data.path.append(os.path.expanduser('~/nltk_data'))
