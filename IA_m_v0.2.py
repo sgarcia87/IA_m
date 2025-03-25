@@ -601,11 +601,11 @@ def generar_indice_subgrafos(G, top_n=50, carpeta="subgrafos"):
             </div>
         </div>
         <div class="columna-derecha">
-            <iframe id="visor" src="IA_m_proceso.html"></iframe>
+            <iframe id="visor" src="../IA_m_proceso.html"></iframe>
         </div>
 <script>
     function volverAlProceso() {{
-        document.getElementById("visor").src = "IA_m_proceso.html";
+        document.getElementById("visor").src = "../IA_m_proceso.html";
     }}
     function cargarNodo(archivo) {{
         document.getElementById("visor").src = archivo;
