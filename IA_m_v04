@@ -2968,13 +2968,7 @@ if __name__ == "__main__":
     print("🔄 Reorganizando la red para conectar nodos en espera...")
     G = reorganizar_red(G)
     
-    # Limpieza manual (por si aún queda alguno)   
-#    for nodo in list(G.nodes()):
-#        if nodo.count("emergente") > 1 and not any(x in nodo for x in ["equilibrio", "síntesis", "neutro", "centro"]):
-#            print(f"🧹 Eliminando falso emergente: {nodo}")
-#            G.remove_node(nodo)
     guardar_red(G)
-
 
     print(f"📊 Nodos cargados: {len(G.nodes())}")
     print(f"🔗 Conexiones cargadas: {len(G.edges())}")
