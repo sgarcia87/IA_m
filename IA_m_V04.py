@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import signal
 import torch
 import random
+import plotly.graph_objects as go
 from pyvis.network import Network
 from sentence_transformers import SentenceTransformer, util
 from collections import defaultdict
@@ -22,6 +23,8 @@ from nltk.corpus import wordnet as wn
 from difflib import get_close_matches
 from nltk.stem.snowball import SnowballStemmer
 from collections import Counter
+from itertools import combinations
+from datetime import datetime
 ################################################################################################################################ Configuración
 # Evita los mensajes de descarga de NLTK
 nltk.data.path.append(os.path.expanduser('~/nltk_data'))
@@ -1166,7 +1169,6 @@ def corregir_termino(termino, diccionario):
     sugerencias = get_close_matches(termino, diccionario.keys(), n=1, cutoff=0.8)
     return sugerencias[0] if sugerencias else termino
 
-
 # 🔹 Detectar dualidad con embeddings
 def detectar_dualidad_embeddings(nuevo_concepto, G, top_n=5):
     palabras_red = list(G.nodes())
@@ -1567,6 +1569,79 @@ def evaluar_progreso_fractal(G, ruta_json="progreso_fractal.json"):
         print("🌟 ¡META 144 ALCANZADA!")
 
     return entrada
+    
+def visualizar_hipercubo_conceptual_3D(G):
+    G = nx.Graph()
+    posiciones_conceptuales = {
+        "izquierda": (-1, 0, 0),
+        "derecha": (1, 0, 0),
+        "arriba": (0, 1, 0),
+        "abajo": (0, -1, 0),
+        "delante": (0, 0, 1),
+        "detrás": (0, 0, -1),
+        "pasado": (-1, -1, 0),
+        "futuro": (1, 1, 0),
+        "presente": (0, 0, 0),
+        "interior": (0, 0, -2),
+        "exterior": (0, 0, 2),
+        "objetivo": (-2, 0, 0),
+        "subjetivo": (2, 0, 0),
+        "sensación": (0, -2, 0),
+        "razón": (0, 2, 0),
+        "observador": (0, 0, 0)
+    }
+
+    for nodo, pos in posiciones_conceptuales.items():
+        G.add_node(nodo, pos=pos)
+
+    for nodo in G.nodes:
+        if nodo != "observador":
+            G.add_edge(nodo, "observador")
+
+    x_nodes, y_nodes, z_nodes, labels = [], [], [], []
+    for nodo in G.nodes:
+        x, y, z = G.nodes[nodo]["pos"]
+        x_nodes.append(x)
+        y_nodes.append(y)
+        z_nodes.append(z)
+        labels.append(nodo)
+
+    x_edges, y_edges, z_edges = [], [], []
+    for edge in G.edges:
+        x_edges += [G.nodes[edge[0]]["pos"][0], G.nodes[edge[1]]["pos"][0], None]
+        y_edges += [G.nodes[edge[0]]["pos"][1], G.nodes[edge[1]]["pos"][1], None]
+        z_edges += [G.nodes[edge[0]]["pos"][2], G.nodes[edge[1]]["pos"][2], None]
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter3d(
+        x=x_edges, y=y_edges, z=z_edges,
+        mode='lines',
+        line=dict(color='gray', width=2),
+        name='Líneas de conexión'
+    ))
+
+    fig.add_trace(go.Scatter3d(
+        x=x_nodes, y=y_nodes, z=z_nodes,
+        mode='markers+text',
+        marker=dict(size=6, color='skyblue'),
+        text=labels,
+        textposition='top center',
+        name='Nodos conceptuales'
+    ))
+
+    fig.update_layout(
+        title="Hipercubo conceptual IA_m con líneas de fuerza",
+        scene=dict(
+            xaxis_title='Espacio (X)',
+            yaxis_title='Tiempo (Y)',
+            zaxis_title='Consciencia (Z)',
+        ),
+        margin=dict(l=0, r=0, b=0, t=30)
+    )
+
+    fig.show()
+
 
 def visualizar_red(G):
     net = Network(height="900px", width="100%", directed=True, notebook=False)
@@ -2112,8 +2187,6 @@ def visualizar_meta_triangulo(G, emergente_data):
     Visualiza un meta-triángulo emergente a partir de 3 dualidades conectadas por un nodo de equilibrio.
     emergente_data debe ser una tupla: (nombre_emergente, equilibrio, dualidades)
     """
-    from pyvis.network import Network
-
     nombre, equilibrio, dualidades = emergente_data
     subG = nx.DiGraph()
     subG.add_node(nombre)
@@ -2193,8 +2266,6 @@ def detectar_conceptos_emergentes(G, min_triangulos=3):
     Detecta nodos que actúan como equilibrio en al menos tres dualidades diferentes
     y genera un nodo emergente (superior) como síntesis conceptual, usando atributos en lugar de nombres.
     """
-    from collections import defaultdict
-
     triangulos = detectar_triangulos_equilibrio(G)
     mapa_equilibrios = defaultdict(list)
 
@@ -2230,8 +2301,6 @@ def detectar_conceptos_emergentes(G, min_triangulos=3):
     return conceptos_emergentes
 
 def visualizar_meta_triangulo_global(G):
-    from pyvis.network import Network
-
     emergentes = [n for n, attr in G.nodes(data=True) if attr.get("tipo") == "emergente"]
     nodos_vis = set()
     edges_vis = []
@@ -2700,7 +2769,6 @@ def auditar_red_semantica(G):
                 errores["emergentes_sin_equilibrio"].append(nodo)
 
     # 🧩 Detectar triángulos no válidos
-    from itertools import combinations
     for n in G.nodes():
         vecinos = list(G.neighbors(n))
         for a, b in combinations(vecinos, 2):
@@ -2738,10 +2806,6 @@ def auditar_red_semantica(G):
         print(list(G.predecessors("términos_emergente")))
 
     return errores
-
-import json
-import os
-from datetime import datetime
 
 def rastrear_evolucion_conceptual(G):
     resultado = {
@@ -2933,7 +2997,7 @@ if __name__ == "__main__":
             print(f"{vecino}: {G.degree(vecino)} conexiones")
     try:
         while True:
-            entrada = input("\n🤔 Opciones: [salir] [consultar] [sistema] [añadir] [expandir] [historial] [ver red] [auditar] [auto]: ").strip().lower()
+            entrada = input("\n🤔 Opciones: [salir] [consultar] [sistema] [añadir] [expandir] [historial] [ver red] [ver hipercubo] [auditar] [auto]: ").strip().lower()
 
             if entrada == "salir":
                 print("👋 Saliendo... Guardando cambios en la red.")
@@ -2989,7 +3053,9 @@ if __name__ == "__main__":
 
             elif entrada == "historial":
                 ver_registro()
-                generar_reportes()                
+                generar_reportes()
+            elif entrada == "ver hipercubo":
+                visualizar_hipercubo_conceptual_3D(G)
             elif entrada == "auto":
                 usar_wikipedia = False #input("🌍 ¿Deseas extraer información de Wikipedia? (s/n): ").strip().lower()
                 usar_gpt = input("🧠 ¿Deseas usar ChatGPT para la expansión? (s/n): ").strip().lower()
