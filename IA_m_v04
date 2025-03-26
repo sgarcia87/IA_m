@@ -1570,7 +1570,7 @@ def evaluar_progreso_fractal(G, ruta_json="progreso_fractal.json"):
 
     return entrada
     
-def visualizar_hipercubo_conceptual_3D():
+def visualizar_hipercubo_conceptual_3D(G):
     G = nx.Graph()
     posiciones_conceptuales = {
         "izquierda": (-1, 0, 0),
@@ -3055,7 +3055,7 @@ if __name__ == "__main__":
                 ver_registro()
                 generar_reportes()
             elif entrada == "ver hipercubo":
-                visualizar_hipercubo_conceptual_3D()
+                visualizar_hipercubo_conceptual_3D(G)
             elif entrada == "auto":
                 usar_wikipedia = False #input("🌍 ¿Deseas extraer información de Wikipedia? (s/n): ").strip().lower()
                 usar_gpt = input("🧠 ¿Deseas usar ChatGPT para la expansión? (s/n): ").strip().lower()
