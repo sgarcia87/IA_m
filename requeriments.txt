@@ -1,0 +1,13 @@
+openai
+networkx
+pyvis
+matplotlib
+numpy
+torch
+sentence-transformers
+wikipedia-api
+nltk
+plotly
+scikit-learn
+
+python3 -m nltk.downloader wordnet omw-1.4
